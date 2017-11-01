@@ -16,102 +16,49 @@
  */
 
 #include <string.h>
-#include "SoftwareSerial.h"
-
-/*button*/
-const int buttonPin = D4;
-
-
-/*reset pin nbiot module*/
-const int resetPin = 7;
-/*(software) serial interface that connects to nbiot module*/
-SoftwareSerial device(3,2); // rx, tx
+#include "gmx_nbiot.h"
 
 
 /* UDP remote host */
 /*TODO modify remote address and port!*/
-const String udp_remote_addr = "88.99.84.133";
-const String udp_remote_port = "21321";
-
+// const String udp_remote_addr = "88.99.84.133";
+// const String udp_remote_port = "21321";
 
 
 /* Init for BC95 Module */
 void init_BC95() {
-  String test = "";
-  // Resetting Module
-  digitalWrite(resetPin,HIGH);
-  Serial.println("RESET MODULE");
-  delay(1000);
-  digitalWrite(resetPin,LOW);
-  delay(5000);
+  String version;
+  byte join_status;
+  int join_wait=0;
 
-  // Print first AT
-  device.println("AT");
-  test = device.readString();
-  delay(50);
-  if (test.indexOf("OK"))
-  {
-    Serial.println("Device response is: OK");
+  Serial.println("Starting");
+
+  // Init NB IoT board
+  gmxNB_init("1.1.1.1","9200",NULL);
+
+  gmxNB_getVersion(version);
+  Serial.println("GMXNB Version:"+version);
+
+  gmxNB_getIMEI(version);
+  Serial.println("GMXNB IMEI:"+version);
+
+  gmxNB_startDT(); 
+
+  while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
+    gmxNB_Led2(GMXNB_LED_ON);
+    delay(500);
+    gmxNB_Led2(GMXNB_LED_OFF);
+    Serial.print("Waiting to connect:");
+    Serial.println(join_wait);
+    join_wait++;
+    
+    delay(2500);  
   }
-  else
-  {
-    while ((test.indexOf("OK") <= 0)) {
-      device.println("AT");
-      test = device.readString();
-      Serial.println("Device response failed... Try again in 1 second");
-      delay(1000);
-    }
-  }
-  device.println("AT+CEREG=1");
-  Serial.println("AT+CEREG=1");
-  delay(1000);
-  device.println("AT+CSCON=1");
-  Serial.println("AT+CSCON=1");
-
-  Serial.println("Waiting for Network Registration");
-  //led_timer.attach(&toggleLed,1);
-  //volatile long cnt = 0;
-  String str = "";
-  device.end();
-
-  while(1) {
-    device.begin(9600);
-    str = device.readString();
-    if(str.length() > 0)
-      Serial.println(str);
-    int cereg_found = str.indexOf("+CEREG:5");
-
-    if(cereg_found > -1) {
-      break;
-    }
-
-    if(str.length() > 0)
-    {
-      str = "";
-    }
-    device.end();
-  }
-
-  Serial.print("Registration Complete\r\n");
-  Serial.print("Done\r\n");
-  Serial.print("Creating UDP Socket\r\n");
-  delay(2000);
-  device.print("AT+NSOCR=DGRAM,17," + udp_remote_port + ",1\r\n");
-  delay(2000);
-  Serial.print("INIT DONE");
-  //finishLed = 1;
+  
+  Serial.println("Connected!!!");
+  gmxNB_Led2(GMXNB_LED_ON);
 }
 
-
-
-/**
- * @brief This function checks the current state of the button and returns 
- * it immediately. The function does not wait for any specific button state 
- * (non-blocking).
- */
-bool isButtonPressed_Nonblocking() {
-  return (digitalRead(buttonPin) != 0);
-}
 
 
 
@@ -124,13 +71,14 @@ void setup() {
   Serial.println("NB-IoT Demo");
   
   /*initialise connection to nbiot module*/
-  device.begin(9600);
+  // device.begin(9600);
   
   /*Button DigIn configuration*/
-  pinMode(buttonPin, INPUT);
+  // pinMode(buttonPin, INPUT);
   
   /*finally, initialise nbiot module*/
   init_BC95();
+  Serial.println("setup finished.");
 }
 
 
@@ -143,20 +91,48 @@ void setup() {
  * NB-IoT module will be triggered.
  */
 void loop() {
-  static bool buttonIsPressed = false;
- 
-  /*check button function*/
-  if(isButtonPressed_Nonblocking() && !buttonIsPressed) {
-    /*button press detected (signalised once)*/
-    buttonIsPressed = true;
-    // Serial.println("Button pressed.");
+  static long int timer_period_to_tx = 20000;
+  static long int timer_millis_tx = 0;
+  long int delta_tx = millis() - timer_millis_tx;
+
+  if ( delta_tx > timer_period_to_tx) {
+    Serial.println("TX DATA");
+    gmxNB_TXData("313233");
+   
+    timer_millis_tx = millis();
+
+    // flash LED
+    gmxNB_Led3(GMXNB_LED_ON);
+    delay(200);
+    gmxNB_Led3(GMXNB_LED_OFF);
     
-    /*TODO Send something here each time a button has been pressed.*/
+   }
+
+  
+  
+#if 0  
+  String test = "";
+
+  // Serial.write("x");
+
+  if(Serial.available())
+  {
+    // Serial.write("x");
+    // test = Serial.read();
+    test = Serial.readString();
+    // delay(50);
+    Serial.println(test.c_str());
+    device.println(test.c_str());
     
+    // device.write(Serial.read());
   }
-  else if(!isButtonPressed_Nonblocking() && buttonIsPressed) {
-    /*button release detected (signalised once)*/
-    buttonIsPressed = false;
-    // Serial.println("Button released.");
+  if(device.available())
+  {
+    Serial.print("z");
+    test = device.readString();
+    // Serial.print(device.read());
+    // Serial.println(device.readString());
+    Serial.println(test.c_str());
   }
+#endif /*0*/
 }
