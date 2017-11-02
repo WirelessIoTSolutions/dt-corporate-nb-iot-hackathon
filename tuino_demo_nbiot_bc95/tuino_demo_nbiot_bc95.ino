@@ -21,8 +21,8 @@
 
 /* UDP remote host */
 /*TODO modify remote address and port!*/
-// const String udp_remote_addr = "88.99.84.133";
-// const String udp_remote_port = "21321";
+const String udp_remote_addr = "88.99.84.133";
+const int udp_remote_port = 21321;
 
 
 /* Init for BC95 Module */
@@ -34,7 +34,8 @@ void init_BC95() {
   Serial.println("Starting");
 
   // Init NB IoT board
-  gmxNB_init("1.1.1.1","9200",NULL);
+  // gmxNB_init("1.1.1.1","9200",NULL);
+  gmxNB_init(udp_remote_addr, udp_remote_port,NULL);
 
   gmxNB_getVersion(version);
   Serial.println("GMXNB Version:"+version);
