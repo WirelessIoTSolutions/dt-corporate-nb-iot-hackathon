@@ -16,6 +16,10 @@
  *      License: it's free - do whatever you want! ( provided you leave the credits)
  *
  */
+#ifndef _GMX_NBIOT_H
+#define _GMX_NBIOT_H
+
+#include <Arduino.h>
 
 
 #define GMXNB_KO                      -1 
@@ -27,6 +31,7 @@
 
 #define GMXNB_AT_ERROR                30
 #define GMXNB_AT_GENERIC_ERROR        99
+#define GMXNB_AT_TIMEOUT              55
 
 #define GMXNB_LED_ON                  1
 #define GMXNB_LED_OFF                 0
@@ -42,20 +47,22 @@
 
 #define NB_NETWORK_JOINED             1
 #define NB_NETWORK_NOT_JOINED         0
- 
+
+
+
 /*
  * GMX-LR1 Init function
  *  the only parameter is the function for the RxData callback
  */
  
-byte gmxNB_init(String upd_addre, int udp_port, void( *callback)()) ;
+byte gmxNB_init(String ipAddress, int udpPort, void( *callback)());
 byte gmxNB_getVersion(String& version);
 byte gmxNB_getIMEI(String& imei);
 
 byte gmxNB_radioON(String& param);
 byte gmxNB_setAPN(String APN);
 byte gmxNB_isNetworkJoined(void);
-
+byte gmxNB_ping(String hostIp);
 byte gmxNB_getCSQ(String& csq);
 
 
@@ -63,8 +70,14 @@ void gmxNB_startDT();
 
 
 // TX & RX Data
-byte gmxNB_TXData(String data);
-byte gmxNB_RXData(String& data);
+byte gmxNB_TXData(const char *binaryData, int len);
+byte gmxNB_RXData(String &remoteIp, int &udpPortNr, byte *binaryData, int &len);
+
+/*data conversion binary <-> hex */
+String AtResponseTokenize(String atResponse, String delimiter, int &indexStart);
+String gmxNB_BinaryToHex(const char *binaryData, int binaryLen );
+byte gmxNB_HexToBinary(String hexStr, byte *binaryData);
+
 
 
 
@@ -72,12 +85,11 @@ byte gmxNB_RXData(String& data);
  * Utilities
  */
  
-byte gmxNB_Led1(byte led_state);
-byte gmxNB_Led2(byte led_state);
-byte gmxNB_Led3(byte led_state);
+void gmxNB_Led1(byte led_state);
+void gmxNB_Led2(byte led_state);
+void gmxNB_Led3(byte led_state);
 
 void gmxNB_Reset(void);
-void gmxNB_StringToHex(String string, char *data, int *len );
 
-
+#endif /*_GMX_NBIOT_H*/
 

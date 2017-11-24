@@ -17,12 +17,19 @@
 
 #include <string.h>
 #include "gmx_nbiot.h"
+#include "mqttsn.h"
 
 
-/* UDP remote host */
-/*TODO modify remote address and port!*/
-const String udp_remote_addr = "88.99.84.133";
-const int udp_remote_port = 21321;
+/* UDP remote host / CoT MQTTSN service*/
+const String udp_remote_addr  = "172.25.102.151";
+const int udp_remote_port     = 1883;
+
+/*CoT access parameters*/
+String myImsi                 = "901405800006245";
+String myCotPassword          = "DWKdkVT8";
+
+int myMqttsnTopicId = MQTTSN_TOPIC_INVALID_ID;
+
 
 
 /* Init for BC95 Module */
@@ -34,16 +41,15 @@ void init_BC95() {
   Serial.println("Starting");
 
   // Init NB IoT board
-  // gmxNB_init("1.1.1.1","9200",NULL);
-  gmxNB_init(udp_remote_addr, udp_remote_port,NULL);
+  gmxNB_init(udp_remote_addr, udp_remote_port, NULL);
 
-  gmxNB_getVersion(version);
+  // gmxNB_getVersion(version);
   Serial.println("GMXNB Version:"+version);
 
   gmxNB_getIMEI(version);
   Serial.println("GMXNB IMEI:"+version);
 
-  gmxNB_startDT(); 
+  gmxNB_startDT();
 
   while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
     gmxNB_Led2(GMXNB_LED_ON);
@@ -53,7 +59,7 @@ void init_BC95() {
     Serial.println(join_wait);
     join_wait++;
     
-    delay(2500);  
+    delay(2500);
   }
   
   Serial.println("Connected!!!");
@@ -79,8 +85,33 @@ void setup() {
   
   /*finally, initialise nbiot module*/
   init_BC95();
+  // gmxNB_startDT();
   Serial.println("setup finished.");
+
+  /*attempt connecting to CoT*/
+  if (Mqttsn_Connect(myImsi, myCotPassword) == false)
+  {
+    /*TODO connect failed, restart*/
+    return;
+  }
+
+  Serial.println("connected, registering topic...");
+  myMqttsnTopicId = Mqttsn_RegisterTopic(MQTTSN_TOPIC_MEASUREMENT, MQTTSN_MEAS_TYPE_TEMPERATURE);
+  if(myMqttsnTopicId == MQTTSN_TOPIC_INVALID_ID)
+  {
+    /*TODO topic reg failed, disconnect / restart connect*/
+    return;
+  }
+
+  Serial.println("topic registered, uploading data...");
+  if(Mqttsn_PublishMeasurementData(myMqttsnTopicId, "25.4") == false)
+  {
+    /*TODO data upload failed, disconnect / restart connect*/
+    return;
+  }
+
 }
+
 
 
 
@@ -92,48 +123,21 @@ void setup() {
  * NB-IoT module will be triggered.
  */
 void loop() {
-  static long int timer_period_to_tx = 20000;
-  static long int timer_millis_tx = 0;
-  long int delta_tx = millis() - timer_millis_tx;
-
-  if ( delta_tx > timer_period_to_tx) {
-    Serial.println("TX DATA");
-    gmxNB_TXData("313233");
-   
-    timer_millis_tx = millis();
-
-    // flash LED
-    gmxNB_Led3(GMXNB_LED_ON);
-    delay(200);
-    gmxNB_Led3(GMXNB_LED_OFF);
-    
-   }
-
-  
-  
-#if 0  
   String test = "";
-
-  // Serial.write("x");
 
   if(Serial.available())
   {
-    // Serial.write("x");
-    // test = Serial.read();
     test = Serial.readString();
-    // delay(50);
     Serial.println(test.c_str());
-    device.println(test.c_str());
-    
-    // device.write(Serial.read());
+    Serial1.println(test.c_str());
   }
-  if(device.available())
+
+
+  if(Serial1.available())
   {
-    Serial.print("z");
-    test = device.readString();
-    // Serial.print(device.read());
-    // Serial.println(device.readString());
-    Serial.println(test.c_str());
+    test = Serial1.readString();
+    Serial.println(test.c_str()); 
   }
-#endif /*0*/
 }
+
+
