@@ -172,6 +172,66 @@ byte _parseResponse(String& response) {
 
 /* GMXLR Commands Interface */
 
+bool gmxNB_tryQuickInit(String ipAddress, int udpPort, void( *callback)())
+{
+  String response;
+  byte init_status = GMXNB_KO;
+  byte status;
+
+  udp_socket_ip = ipAddress;
+  udp_port = udpPort;
+
+  _log("GMXNB Init");
+
+  pinMode(GMX_GPIO1, OUTPUT);
+  pinMode(GMX_GPIO2, OUTPUT);
+  pinMode(GMX_GPIO3, OUTPUT);
+  digitalWrite(GMX_GPIO1, LOW);
+  digitalWrite(GMX_GPIO2, LOW);
+  digitalWrite(GMX_GPIO3, LOW);
+
+  // Init Interface
+  if ( gmxNB_interface == GMX_UART_INTERFACE )
+  {
+    // Setup Serial
+    if (Serial1) {
+      Serial1.begin(GMX_UART_SPEED);
+      _log("GMX Serial Interface");
+      init_status = GMXNB_OK;
+    }
+    else
+    {
+      return (GMXNB_NO_SERIAL);
+    }
+  }
+  
+  // Setup Interrupt PIN for Rx
+  *digitalPinToPCICR(GMX_INT) |= (1 << digitalPinToPCICRbit(GMX_INT));
+  *digitalPinToPCMSK(GMX_INT) |= (1 << digitalPinToPCMSKbit(GMX_INT));
+
+  // set RX callback
+  _NBRing = callback;
+
+  // delay to wait BootUp of GMX-LR
+  delay(GMX_BOOT_DELAY);
+
+  _sendCmd( "AT\r" );
+  _parseResponse(response);
+  _sendCmd( "AT\r" );
+  status = _parseResponse(response);
+
+  if(status != GMXNB_OK)
+  {
+    return gmxNB_init(ipAddress, udpPort, callback);
+  }
+  else
+  {
+    return init_status;
+  }
+}
+
+
+
 byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
 {
   String response;
@@ -220,7 +280,6 @@ byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
   _parseResponse(response);
   _sendCmd( "AT\r" );
   _parseResponse(response);
-
   return init_status;
 }
 
@@ -244,6 +303,16 @@ byte gmxNB_getIMEI(String& imei)
 
 
 
+/* IMSI */
+byte gmxNB_getIMSI(String& imsi)
+{
+  _sendCmd( "AT+CIMI\r" );
+  return ( _parseResponse(imsi) );
+}
+
+
+
+/* Signal Strength Indicator */
 byte gmxNB_getCSQ(String& csq)
 {
   _sendCmd( "AT+CSQ\r" );
@@ -252,7 +321,7 @@ byte gmxNB_getCSQ(String& csq)
 
 
 
-/* Radio */
+/* Radio on */
 byte gmxNB_radioON(String& param)
 {
   _sendCmd( "AT+CFUN=1\r" );
@@ -261,6 +330,7 @@ byte gmxNB_radioON(String& param)
 
 
 
+/* all powered down */
 byte gmxNB_radioOFF(String& param)
 {
   _sendCmd( "AT+CFUN=0\r" );
@@ -296,8 +366,7 @@ void gmxNB_startDT()
   _sendCmd( "AT+NCONFIG=CR_0859_SI_AVOID,TRUE\r" );
   _parseResponse(dummyResponse);
 
-  _sendCmd( "AT+CIMI\r" );
-  _parseResponse(dummyResponse);
+  gmxNB_getIMSI(dummyResponse);
 
   gmxNB_radioOFF(dummyResponse);
 
@@ -398,7 +467,7 @@ byte gmxNB_HexToBinary(String hexStr, byte *binaryData)
       binaryData[j] = (temp <= '9') ? (temp - '0') : (temp - 'A' + 10);
       binaryData[j] *= 16;
       temp = hexStr.charAt(i+1);
-      binaryData[j] = (temp <= '9') ? (temp - '0') : (temp - 'A' + 10);
+      binaryData[j] += (temp <= '9') ? (temp - '0') : (temp - 'A' + 10);
   
       j++;
     }

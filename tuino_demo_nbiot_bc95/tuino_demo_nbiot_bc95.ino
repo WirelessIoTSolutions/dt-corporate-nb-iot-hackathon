@@ -37,33 +37,42 @@ void init_BC95() {
   String version;
   byte join_status;
   int join_wait=0;
+  String testImsi;
 
   Serial.println("Starting");
 
-  // Init NB IoT board
-  gmxNB_init(udp_remote_addr, udp_remote_port, NULL);
-
-  // gmxNB_getVersion(version);
-  Serial.println("GMXNB Version:"+version);
-
-  gmxNB_getIMEI(version);
-  Serial.println("GMXNB IMEI:"+version);
-
-  gmxNB_startDT();
-
-  while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
-    gmxNB_Led2(GMXNB_LED_ON);
-    delay(500);
-    gmxNB_Led2(GMXNB_LED_OFF);
-    Serial.print("Waiting to connect:");
-    Serial.println(join_wait);
-    join_wait++;
-    
-    delay(2500);
-  }
+  if((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) 
+  {
+    // Init NB IoT board
+    gmxNB_init(udp_remote_addr, udp_remote_port, NULL);
   
+    // gmxNB_getVersion(version);
+    Serial.println("GMXNB Version:"+version);
+  
+    gmxNB_getIMEI(version);
+    Serial.println("GMXNB IMEI:"+version);
+  
+    gmxNB_startDT();
+  
+    while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
+      gmxNB_Led2(GMXNB_LED_ON);
+      delay(500);
+      gmxNB_Led2(GMXNB_LED_OFF);
+      Serial.print("Waiting to connect:");
+      Serial.println(join_wait);
+      join_wait++;
+      
+      delay(2500);
+    }
+    
+  }
   Serial.println("Connected!!!");
   gmxNB_Led2(GMXNB_LED_ON);
+
+  gmxNB_getIMSI(testImsi);
+  Serial.println("===>");
+  Serial.println(testImsi);
+  Serial.println("<===");
 }
 
 
@@ -89,10 +98,10 @@ void setup() {
   Serial.println("setup finished.");
 
   /*attempt connecting to CoT*/
-  if (Mqttsn_Connect(myImsi, myCotPassword) == false)
+  while(Mqttsn_Connect(myImsi, myCotPassword) == false)
   {
     /*TODO connect failed, restart*/
-    return;
+    // return;
   }
 
   Serial.println("connected, registering topic...");
@@ -124,6 +133,14 @@ void setup() {
  */
 void loop() {
   String test = "";
+
+  delay(10000);
+  Serial.println("topic registered, uploading data...");
+  if(Mqttsn_PublishMeasurementData(myMqttsnTopicId, "25.4") == false)
+  {
+    /*TODO data upload failed, disconnect / restart connect*/
+    return;
+  }
 
   if(Serial.available())
   {
