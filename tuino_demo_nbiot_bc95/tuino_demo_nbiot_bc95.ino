@@ -134,12 +134,16 @@ void setup() {
 void loop() {
   String test = "";
 
-  delay(10000);
   Serial.println("topic registered, uploading data...");
   if(Mqttsn_PublishMeasurementData(myMqttsnTopicId, "25.4") == false)
   {
     /*TODO data upload failed, disconnect / restart connect*/
     return;
+  }
+  else
+  {
+    /*wait 20 secs before sending a message again*/
+    delay(20000);
   }
 
   if(Serial.available())
