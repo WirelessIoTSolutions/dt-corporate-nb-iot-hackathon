@@ -41,31 +41,31 @@ void init_BC95() {
 
   Serial.println("Starting");
 
-  if((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) 
+  // Init NB IoT board
+  join_status = gmxNB_init(/*forceReset:*/false, udp_remote_addr, udp_remote_port, NULL);
+  
+  // gmxNB_getVersion(version);
+  // Serial.println("GMXNB Version:"+version);
+  
+  gmxNB_getIMEI(version);
+  Serial.println("GMXNB IMEI:"+version);
+  
+  if (join_status != NB_NETWORK_JOINED) 
   {
-    // Init NB IoT board
-    gmxNB_init(udp_remote_addr, udp_remote_port, NULL);
-  
-    // gmxNB_getVersion(version);
-    Serial.println("GMXNB Version:"+version);
-  
-    gmxNB_getIMEI(version);
-    Serial.println("GMXNB IMEI:"+version);
-  
     gmxNB_startDT();
-  
-    while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
-      gmxNB_Led2(GMXNB_LED_ON);
-      delay(500);
-      gmxNB_Led2(GMXNB_LED_OFF);
-      Serial.print("Waiting to connect:");
-      Serial.println(join_wait);
-      join_wait++;
-      
-      delay(2500);
-    }
-    
   }
+  
+  while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
+    gmxNB_Led2(GMXNB_LED_ON);
+    delay(500);
+    gmxNB_Led2(GMXNB_LED_OFF);
+    Serial.print("Waiting to connect:");
+    Serial.println(join_wait);
+    join_wait++;
+    
+    delay(2500);
+  }
+  
   Serial.println("Connected!!!");
   gmxNB_Led2(GMXNB_LED_ON);
 
@@ -100,8 +100,7 @@ void setup() {
   /*attempt connecting to CoT*/
   while(Mqttsn_Connect(myImsi, myCotPassword) == false)
   {
-    /*TODO connect failed, restart*/
-    // return;
+    /*TODO restart if connect fails permanently*/
   }
 
   Serial.println("connected, registering topic...");
