@@ -52,8 +52,8 @@ void loop()
     int sensorValue = analogRead(LIGHT_SENSOR); 
     Rsensor = (float)(1023-sensorValue)*10/sensorValue;
     
-    Serial.println("Lightlevel is: " + String(sensorValue));
-    Serial.println(servoValue);
+    Serial.println("Light level: " + String(sensorValue));
+    Serial.println("Sensor position: " + String(servoValue));
 
    if(sensorValue >= (targetValue + diff))
     {
