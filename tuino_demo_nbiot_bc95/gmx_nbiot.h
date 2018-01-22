@@ -55,11 +55,14 @@
  *  the only parameter is the function for the RxData callback
  */
  
-byte gmxNB_init(String ipAddress, int udpPort, void( *callback)());
+byte gmxNB_init(bool forceReset, String ipAddress, int udpPort, void( *callback)());
+byte gmxNB_connect(String ipAddress, int udpPort);
 byte gmxNB_getVersion(String& version);
 byte gmxNB_getIMEI(String& imei);
 
+byte gmxNB_getIMSI(String& imsi);
 byte gmxNB_radioON(String& param);
+byte gmxNB_radioOFF(String& param);
 byte gmxNB_setAPN(String APN);
 byte gmxNB_isNetworkJoined(void);
 byte gmxNB_ping(String hostIp);
@@ -70,6 +73,10 @@ void gmxNB_startDT();
 
 
 // TX & RX Data
+int gmxNB_SocketOpen(void);
+byte gmxNB_SocketClose(int sock);
+byte gmxNB_SocketClose(void);
+int gmxNB_Available(void);
 byte gmxNB_TXData(const char *binaryData, int len);
 byte gmxNB_RXData(String &remoteIp, int &udpPortNr, byte *binaryData, int &len);
 

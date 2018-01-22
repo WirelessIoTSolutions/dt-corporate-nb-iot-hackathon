@@ -35,7 +35,104 @@ const int     udp_max_packet_sz = 255;
 
 void(*_NBRing)();
 
+/*rx FIFO ringbuffer implementation*/
+#define NB_RINGBUFF_SZ (256)
+volatile char nbRingBuff[NB_RINGBUFF_SZ];
+volatile int  rxPosStart = 0;
+volatile int  rxPosEnd = 0;
 
+
+
+/**
+ * @brief Initialises the ring buffer indices.
+ */
+void NbRingBuffReset(void)
+{
+  rxPosStart = 0;
+  rxPosEnd = 0;
+}
+
+
+/**
+ * @brief Checks if the ring buffer contains pending valid data.
+ * @returns true if data is pending, false otherwise.
+ */
+bool NbRingBuffIsAvailable(void)
+{
+  return (rxPosStart != rxPosEnd);
+}
+
+
+
+/**
+ * @brief Checks the ring buffer is overflown.
+ * @returns true for an overflow condition, false otherwise.
+ */
+bool NbRingBuffIsOverflow(void)
+{
+  return (rxPosStart == ((rxPosEnd + 1) % NB_RINGBUFF_SZ));
+}
+
+
+
+/**
+ * @brief Writes a character into the ring buffer.
+ * @param c The character that shall be written.
+ * @returns true if the write operation was successful, false otherwise (i.e. on overflow).
+ */
+bool NbRingBuffWriteChar(char c)
+{
+  int nextRxPosEnd = (rxPosEnd + 1) % NB_RINGBUFF_SZ;
+  
+  if(rxPosStart == nextRxPosEnd)
+  {
+    /*overflow condition detected. Will not write this character anymore.*/
+    return false;
+  }
+  else
+  {
+    nbRingBuff[rxPosEnd] = c;
+    rxPosEnd = nextRxPosEnd;
+    return true;
+  }
+}
+
+
+
+/**
+ * @brief Reads and removes the oldest character from the ring buffer.
+ * @returns The oldest character pending in the ring buffer, -1 if the buffer was empty.
+ */
+char NbRingBuffReadChar()
+{
+  char retval = -1;
+  
+  if(NbRingBuffIsAvailable())
+  {
+    retval = nbRingBuff[rxPosStart];
+    rxPosStart = (rxPosStart + 1) % NB_RINGBUFF_SZ;
+  }
+
+  return retval;
+}
+
+
+
+/**
+ * @brief Reads and removes all pending characters from the ring buffer and puts them into a String object.
+ * @returns A string object that contains all characters that were pending in the ring buffer.
+ */
+String NbRingBuffReadString(void)
+{
+  String retStr = "";
+  
+  while(NbRingBuffIsAvailable())
+  {
+    retStr += NbRingBuffReadChar();
+  }
+
+  return retStr;
+}
 
 
 //
@@ -169,16 +266,29 @@ byte _parseResponse(String& response) {
 }
 
 
+byte _gmxNB_AtCommTest(String& response){
+  _sendCmd( "AT\r" );
+  return _parseResponse(response);
+}
 
-/* GMXLR Commands Interface */
 
-byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
+
+/* GMXNB Commands Interface */
+byte gmxNB_connect(String ipAddress, int udpPort)
+{
+  udp_socket_ip = ipAddress;
+  udp_port = udpPort;
+  return GMXNB_OK;
+}
+
+
+
+byte gmxNB_init(bool forceReset, String ipAddress, int udpPort, void( *callback)())
 {
   String response;
   byte init_status = GMXNB_KO;
 
-  udp_socket_ip = ipAddress;
-  udp_port = udpPort;
+  gmxNB_connect(ipAddress, udpPort);
 
   _log("GMXNB Init");
 
@@ -189,7 +299,7 @@ byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
   digitalWrite(GMX_GPIO2, LOW);
   digitalWrite(GMX_GPIO3, LOW);
 
-  _resetGMX();
+  // _resetGMX();
 
   // Init Interface
   if ( gmxNB_interface == GMX_UART_INTERFACE )
@@ -199,6 +309,24 @@ byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
       Serial1.begin(GMX_UART_SPEED);
       _log("GMX Serial Interface");
       init_status = GMXNB_OK;
+
+      /*try to avoid a module reset. check if there is an active network access already.*/
+      if((_gmxNB_AtCommTest(response) == GMXNB_OK) && (forceReset == false))
+      {
+        if(gmxNB_isNetworkJoined() == NB_NETWORK_JOINED)
+        {
+          /*We still have network access. Let's keep it like this!*/
+          init_status = NB_NETWORK_JOINED;
+        }
+        else
+        {
+          _resetGMX();
+        }
+      }
+      else
+      {
+        _resetGMX();
+      }
     }
     else
     {
@@ -206,6 +334,7 @@ byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
     }
   }
 
+  /*FIXME GMX_INT doesn't do anything at all. Can we configure the BC95 to do otherwise?*/
   // Setup Interrupt PIN for Rx
   *digitalPinToPCICR(GMX_INT) |= (1 << digitalPinToPCICRbit(GMX_INT));
   *digitalPinToPCMSK(GMX_INT) |= (1 << digitalPinToPCMSKbit(GMX_INT));
@@ -215,12 +344,13 @@ byte gmxNB_init(String ipAddress, int udpPort, void( *callback)())
 
   // delay to wait BootUp of GMX-LR
   delay(GMX_BOOT_DELAY);
-
-  _sendCmd( "AT\r" );
-  _parseResponse(response);
-  _sendCmd( "AT\r" );
-  _parseResponse(response);
-
+  
+  if(init_status == GMXNB_OK)
+  {
+    /*NOTE _gmxNB_AtCommTest() is intentionally run twice!*/
+    _gmxNB_AtCommTest(response);
+    init_status = _gmxNB_AtCommTest(response);
+  }
   return init_status;
 }
 
@@ -244,6 +374,19 @@ byte gmxNB_getIMEI(String& imei)
 
 
 
+/* IMSI */
+byte gmxNB_getIMSI(String& imsi)
+{
+  byte retval;
+  _sendCmd( "AT+CIMI\r" );
+  retval = _parseResponse(imsi);
+  imsi.trim();
+  return ( retval );
+}
+
+
+
+/* Signal Strength Indicator */
 byte gmxNB_getCSQ(String& csq)
 {
   _sendCmd( "AT+CSQ\r" );
@@ -252,7 +395,7 @@ byte gmxNB_getCSQ(String& csq)
 
 
 
-/* Radio */
+/* Radio on */
 byte gmxNB_radioON(String& param)
 {
   _sendCmd( "AT+CFUN=1\r" );
@@ -261,6 +404,7 @@ byte gmxNB_radioON(String& param)
 
 
 
+/* all powered down */
 byte gmxNB_radioOFF(String& param)
 {
   _sendCmd( "AT+CFUN=0\r" );
@@ -296,9 +440,11 @@ void gmxNB_startDT()
   _sendCmd( "AT+NCONFIG=CR_0859_SI_AVOID,TRUE\r" );
   _parseResponse(dummyResponse);
 
-  _sendCmd( "AT+CIMI\r" );
-  _parseResponse(dummyResponse);
+  /*WARNING Do not delete this line! gmxNB_radioOFF() and gmxNB_radioON() depend on it.*/
+  //wrong warning :( gmxNB_getIMSI(dummyResponse);
+  gmxNB_getIMSI(dummyResponse);
 
+  /*TODO radio off can fail. find out why!*/
   gmxNB_radioOFF(dummyResponse);
 
   // ak: should be auto-configured from provider
@@ -398,7 +544,7 @@ byte gmxNB_HexToBinary(String hexStr, byte *binaryData)
       binaryData[j] = (temp <= '9') ? (temp - '0') : (temp - 'A' + 10);
       binaryData[j] *= 16;
       temp = hexStr.charAt(i+1);
-      binaryData[j] = (temp <= '9') ? (temp - '0') : (temp - 'A' + 10);
+      binaryData[j] += (temp <= '9') ? (temp - '0') : (temp - 'A' + 10);
   
       j++;
     }
@@ -454,11 +600,21 @@ void gmxNB_Led3(byte led_state)
 
 
 // TX & RX Data
+
+/**
+ * @brief Opens a socket for tx/rx data.
+ * @returns The socket number of the socket.
+ * @fixme The socket number is a dummy and maybe not what we got assigned! See comment below!
+ */
 int gmxNB_SocketOpen(void)
 {
   _sendCmd("at+nsocr=DGRAM,17," + udp_port + "\r");
   _parseResponse(dummyResponse);
-  /*FIXME which socket number have we really got?*/
+  /*FIXME / NOTE on workaround 
+   * BC95 always returns 0 for the first socket. 
+   * But which socket number have we really got?
+   * Does String::trim() already do the job?
+   */
   udp_socket_num = 0;
   return udp_socket_num;
 }
@@ -523,6 +679,12 @@ String AtResponseTokenize(String atResponse, String delimiter, int &indexStart)
 }
 
 
+
+
+int gmxNB_Available(void)
+{
+  return (Serial1.available());
+}
 
 
 /*Wait for incoming data packet*/

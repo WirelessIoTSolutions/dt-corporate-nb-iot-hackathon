@@ -37,20 +37,24 @@ void init_BC95() {
   String version;
   byte join_status;
   int join_wait=0;
+  String testImsi;
 
   Serial.println("Starting");
 
   // Init NB IoT board
-  gmxNB_init(udp_remote_addr, udp_remote_port, NULL);
-
+  join_status = gmxNB_init(/*forceReset:*/false, udp_remote_addr, udp_remote_port, NULL);
+  
   // gmxNB_getVersion(version);
-  Serial.println("GMXNB Version:"+version);
-
+  // Serial.println("GMXNB Version:"+version);
+  
   gmxNB_getIMEI(version);
   Serial.println("GMXNB IMEI:"+version);
-
-  gmxNB_startDT();
-
+  
+  if (join_status != NB_NETWORK_JOINED) 
+  {
+    gmxNB_startDT();
+  }
+  
   while((join_status = gmxNB_isNetworkJoined()) != NB_NETWORK_JOINED) {
     gmxNB_Led2(GMXNB_LED_ON);
     delay(500);
@@ -64,6 +68,11 @@ void init_BC95() {
   
   Serial.println("Connected!!!");
   gmxNB_Led2(GMXNB_LED_ON);
+
+  gmxNB_getIMSI(testImsi);
+  Serial.println("===>");
+  Serial.println(testImsi);
+  Serial.println("<===");
 }
 
 
@@ -89,10 +98,9 @@ void setup() {
   Serial.println("setup finished.");
 
   /*attempt connecting to CoT*/
-  if (Mqttsn_Connect(myImsi, myCotPassword) == false)
+  while(Mqttsn_Connect(myImsi, myCotPassword) == false)
   {
-    /*TODO connect failed, restart*/
-    return;
+    /*TODO restart if connect fails permanently*/
   }
 
   Serial.println("connected, registering topic...");
@@ -124,6 +132,18 @@ void setup() {
  */
 void loop() {
   String test = "";
+
+  Serial.println("topic registered, uploading data...");
+  if(Mqttsn_PublishMeasurementData(myMqttsnTopicId, "25.4") == false)
+  {
+    /*TODO data upload failed, disconnect / restart connect*/
+    return;
+  }
+  else
+  {
+    /*wait 20 secs before sending a message again*/
+    delay(20000);
+  }
 
   if(Serial.available())
   {

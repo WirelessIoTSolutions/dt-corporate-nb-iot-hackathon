@@ -22,7 +22,7 @@
 #define MQTTSN_TOPIC_INVALID_ID         0
 
 /*Available topics (use with Mqttsn_RegisterTopic())*/
-#define MQTTSN_TOPIC_MEASUREMENT        "MEAS"
+#define MQTTSN_TOPIC_MEASUREMENT        "MES"
 
 /*Avialable measurement types (use with Mqttsn_RegisterTopic())*/
 #define MQTTSN_MEAS_TYPE_TEMPERATURE    '1'

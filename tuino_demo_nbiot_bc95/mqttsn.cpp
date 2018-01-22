@@ -131,8 +131,8 @@ int Mqttsn_RegisterTopic(String topic, char valueType)
 
 bool Mqttsn_PublishMeasurementData(int topicId, String measuredData)
 {
-  /*                               len   type  topicId                                        msgId*/
-  char myPayload[255] = {/*FIXME:*/0x00, 0x0C, (char)(topicId / 256), (char)(topicId % 256), (char)(mqttsnMsgId / 256), (char)(mqttsnMsgId % 256)};
+  /*                               len   type  flags topicId                                        msgId*/
+  char myPayload[255] = {/*FIXME:*/0x00, 0x0C, 0x20, (char)(topicId / 256), (char)(topicId % 256), (char)(mqttsnMsgId / 256), (char)(mqttsnMsgId % 256)};
   String remoteIp;
   int myUdpPort;
   int myStrLen;
@@ -142,7 +142,7 @@ bool Mqttsn_PublishMeasurementData(int topicId, String measuredData)
 
   /*protocol header*/
   mqttsnMsgId++;
-  myStrLen = 6;
+  myStrLen = 7;
   /*add measured data*/
   myStrLen += sprintf(&(myPayload[myStrLen]), measuredData.c_str());
   /*FIXME this payload length treatment doesn't work for sizes (>127)!*/
