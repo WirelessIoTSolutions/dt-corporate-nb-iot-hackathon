@@ -25,8 +25,8 @@ const String udp_remote_addr  = "172.25.102.151";
 const int udp_remote_port     = 1883;
 
 /*CoT access parameters*/
-String myImsi                 = "901405800006245";
-String myCotPassword          = "DWKdkVT8";
+String myImsi                 = "901405800006638";
+String myCotPassword          = "c9uKm4GZ";
 
 int myMqttsnTopicId = MQTTSN_TOPIC_INVALID_ID;
 
@@ -83,7 +83,7 @@ void init_BC95() {
  */
 void setup() {
   /*initialise serial debug monitor*/
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("NB-IoT Demo");
   
   /*initialise connection to nbiot module*/

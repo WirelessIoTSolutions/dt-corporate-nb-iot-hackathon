@@ -135,9 +135,12 @@ String NbRingBuffReadString(void)
 }
 
 
-//
-// ISR
-//
+/**
+* ISR
+*
+*
+*/
+
 ISR(PCINT1_vect) {
   if (digitalRead(GMX_INT) == 0) {
     if (_NBRing)
@@ -434,6 +437,9 @@ byte gmxNB_ping(String hostIp)
 /*Network provider dependent setup: Deutsche Telekom*/
 void gmxNB_startDT()
 {
+  _sendCmd( "AT+NCONFIG=AUTOCONNECT,TRUE\r" );
+  _parseResponse(dummyResponse);
+
   _sendCmd( "AT+NCONFIG=CR_0354_0338_SCRAMBLING,TRUE\r" );
   _parseResponse(dummyResponse);
 
