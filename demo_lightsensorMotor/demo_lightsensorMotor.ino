@@ -22,7 +22,7 @@ Servo myservo;  // create servo object to control a servo
 
 /*Light Sensor is connected to A0 of Arduino*/
 #define LIGHT_SENSOR A0
-float Rsensor;
+
 int servoValue = 90;
 int targetValue =  70;
 int stepValue = 5;
@@ -50,12 +50,11 @@ void setup()
 void loop()
 {
     int sensorValue = analogRead(LIGHT_SENSOR); 
-    Rsensor = (float)(1023-sensorValue)*10/sensorValue;
     
     Serial.println("Light level: " + String(sensorValue));
     Serial.println("Sensor position: " + String(servoValue));
 
-   if(sensorValue >= (targetValue + diff))
+    if(sensorValue >= (targetValue + diff))
     {
       if(servoValue >= stepValue)
       {
@@ -71,13 +70,14 @@ void loop()
     {
       if(servoValue <= (180 - stepValue))
       {
-      servoValue += stepValue;
+        servoValue += stepValue;
       }
       else
       {
         servoValue = 180;
       }
-    }
+    };
+    
     myservo.write(servoValue);                  // sets the servo position according to the scaled value
     
     delay(1000);
