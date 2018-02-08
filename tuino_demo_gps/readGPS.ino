@@ -57,23 +57,24 @@ void readGPS() {
   for (int strPos = 0; res[commaCount + strPos]; res[commaCount + strPos] == ',' ? commaCount++ : strPos++);
 
   coordValid = (commaCount == 3);
+  coordValid = (res[12] > 0);
   coordValid = coordValid && ((res[10] == 'N') || (res[10] == 'S'));
   coordValid = coordValid && ((res[23] == 'E') || (res[23] == 'W'));
 
   if (coordValid)
   {
     gps_coords_1 = res.substring(res.indexOf(',') - 9, res.indexOf(',') + 2);
-    gps_coords_2 = res.substring(res.indexOf(',') + 3, res.indexOf(',') +15);
+    gps_coords_2 = res.substring(res.indexOf(',') + 4, res.indexOf(',') +15);
     
     Serial.println("Your current position is at: ");
     Serial.println("Longitude -  " + gps_coords_1);
-    Serial.println("Latidue   - " + gps_coords_2);
+    Serial.println("Latidue   -  " + gps_coords_2);
     Serial.println("****************************************");
   }
   else
   {
   Serial.println("invalid GPS data: " + res);
-  Serial.println("commaCount:" + String(commaCount) + " res[12]:" + String(res[12]) + " res[25]:" + String(res[25]));
+  Serial.println("commaCount:" + String(commaCount) + " res[10]:" + String(res[10]) + " res[10]:" + String(res[10]) + " res[12] " + String(res[12]));
   }
 
   SoftSerial.end();
