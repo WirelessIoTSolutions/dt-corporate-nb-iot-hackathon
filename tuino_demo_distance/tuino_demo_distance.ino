@@ -1,49 +1,23 @@
-/*
-  Ultrasonic Sensor HC-SR04 for Arduino
-*/
+#include "Ultrasonic.h"
 
-// defines pins numbers
-const int trigPin = 7;
-const int echoPin = 6;
-
-// defines variables
-long duration;
-int distance;
-/**
- * general setup function
- */
-void setup() {
-  // Sets the trigPin as an Output
-  pinMode(trigPin, OUTPUT);
-  // Sets the echoPin as an Input
-  pinMode(echoPin, INPUT);
-  // Starts the serial communication
-  Serial.begin(9600);
+Ultrasonic ultrasonic(4);
+void setup()
+{
+    Serial.begin(9600);
 }
-/**
- * loop function
- */
-void loop() {
-  // Clears the trigPin
-  digitalWrite(trigPin, LOW);
-  delay(5);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delay(10);
-  digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distance = (duration / 2) * 0.034;
+void loop()
+{
+    long RangeInInches;
+    long RangeInCentimeters;
 
-  if (distance >= 500 || distance <= 0) {
-    Serial.println("no data");
-  }
-  else {
-    // Prints the distance on the Serial Monitor
-    Serial.print("Distance: ");
-    Serial.print(distance);
+    Serial.println("The distance to obstacles in front is: ");
+    RangeInInches = ultrasonic.MeasureInInches();
+    Serial.print(RangeInInches);//0~157 inches
+    Serial.println(" inch");
+    delay(1000);
+
+    RangeInCentimeters = ultrasonic.MeasureInCentimeters(); // two measurements should keep an interval
+    Serial.print(RangeInCentimeters);//0~400cm
     Serial.println(" cm");
-  }
-  delay(1000);
+    delay(1000);
 }
