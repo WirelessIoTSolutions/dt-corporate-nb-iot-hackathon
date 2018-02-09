@@ -16,6 +16,7 @@ typedef struct {
 
 char* gps_to_mqtt(gps_coord_t coord, char *buff);
 char* byte_to_hex(char byt,char *buff);
+float normalize(float coord);
 
 #endif
 

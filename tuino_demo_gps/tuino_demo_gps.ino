@@ -34,7 +34,7 @@ void loop ()
    char hex[3];
    coord = readGPS();
    
-   Serial.println("coord in float: " + String(coord.longitude.fl, 4) + "  &  " + String(coord.latitude.fl, 4));
+   Serial.println("Your position: " + String(coord.longitude.fl, 4) + "  ,  " + String(coord.latitude.fl, 4));
    
    gps_to_mqtt(coord, payload);
 

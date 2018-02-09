@@ -13,7 +13,6 @@ gps_coord_t readGPS() {
   bool coordValid;
   int commaCount = 0;
 
-  Serial.println("Reading GPS...");
   SoftSerial.begin(9600);   
   /*delay required due to UART timing constraints!*/
   delay(100);
@@ -52,7 +51,7 @@ gps_coord_t readGPS() {
   res = str.substring(str.indexOf('A')+13,str.indexOf('A') + 37);
   String gps_coords_1 = "";
   String gps_coords_2 = "";
-  // Serial.println("testdaten: " +res);
+  
 /* count n/o ',' in the string */
   commaCount = 0;
   for (int strPos = 0; res[commaCount + strPos]; res[commaCount + strPos] == ',' ? commaCount++ : strPos++);
@@ -66,25 +65,22 @@ gps_coord_t readGPS() {
   {
     gps_coords_1 = res.substring(res.indexOf(',') - 9, res.indexOf(',') + 2);
     gps_coords_2 = res.substring(res.indexOf(',') + 4, res.indexOf(',') +15);
-    
-    Serial.println("Your current position is at: ");
-    Serial.println("Longitude -  " + gps_coords_1);
-    Serial.println("Latidue   -  " + gps_coords_2);
-    Serial.println("****************************************");
 
     if (gps_coords_1[10] == 'N') {
-      gps.longitude.fl = gps_coords_1.toFloat();
+      gps.longitude.fl = (gps_coords_1.toFloat());
+      
     }
     else {
       gps.longitude.fl = (gps_coords_1.toFloat() * -1);
     }
-           
+    gps.longitude.fl = normalize(gps.longitude.fl);       
     if (gps_coords_2[10] == 'E') {
       gps.latitude.fl = (gps_coords_2.toFloat());
     }
     else {
       gps.latitude.fl = (gps_coords_2.toFloat() * -1);
     }
+    gps.latitude.fl = normalize(gps.latitude.fl);
   }
   else
   {
@@ -112,6 +108,17 @@ char* gps_to_mqtt(gps_coord_t coord, char *buff) {
   ret->latitude.u32  =  htonl(coord.latitude.u32);
   
   return (char *)ret;
+}
+
+
+
+float normalize(float coord){
+  float ret;
+  
+  ret = ((int)coord/100);
+  ret += (((coord/100) - ret)*100)/60;
+  
+  return ret;
 }
 
 
