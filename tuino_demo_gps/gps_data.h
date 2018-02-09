@@ -14,6 +14,8 @@ typedef struct {
   coord latitude;
 } gps_coord_t;
 
+char* gps_to_mqtt(gps_coord_t coord, char *buff);
+char* byte_to_hex(char byt,char *buff);
 
 #endif
 

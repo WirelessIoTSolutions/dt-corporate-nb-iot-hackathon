@@ -14,11 +14,10 @@ gps_coord_t readGPS() {
   int commaCount = 0;
 
   Serial.println("Reading GPS...");
-
-  SoftSerial.begin(9600);
+  SoftSerial.begin(9600);   
   /*delay required due to UART timing constraints!*/
   delay(100);
-
+  
   do {
     /*read character from serial*/
     rxChar = SoftSerial.read();
@@ -73,24 +72,19 @@ gps_coord_t readGPS() {
     Serial.println("Latidue   -  " + gps_coords_2);
     Serial.println("****************************************");
 
-
     if (gps_coords_1[10] == 'N') {
       gps.longitude.fl = gps_coords_1.toFloat();
     }
     else {
       gps.longitude.fl = (gps_coords_1.toFloat() * -1);
     }
-     
-       
+           
     if (gps_coords_2[10] == 'E') {
       gps.latitude.fl = (gps_coords_2.toFloat());
     }
     else {
       gps.latitude.fl = (gps_coords_2.toFloat() * -1);
     }
-    
-    
-    
   }
   else
   {
@@ -102,4 +96,45 @@ gps_coord_t readGPS() {
 
   return gps;
 }
+
+
+
+char* gps_to_mqtt(gps_coord_t coord, char *buff) {
+  
+  gps_coord_t *ret;
+   
+  if (buff == NULL) {
+    return NULL;
+  }
+
+  ret = (gps_coord_t *)buff;
+  ret->longitude.u32 =  htonl(coord.longitude.u32);
+  ret->latitude.u32  =  htonl(coord.latitude.u32);
+  
+  return (char *)ret;
+}
+
+
+
+char* byte_to_hex(char byt,char *buff) {
+
+  uint8_t nibble = (uint8_t)byt >> 4;
+  
+  if(nibble < 10){
+    buff[0] = nibble + '0'; 
+  }
+  else {
+    buff[0] = nibble - 10 + 'A';
+  }
+  nibble = (uint8_t)byt & 0x0f;
+
+  if(nibble < 10){
+    buff[1] = nibble + '0'; 
+  }
+  else {
+    buff[1] = nibble - 10 + 'A';
+  }
+  buff[2] = 0;
+}
+  
 
