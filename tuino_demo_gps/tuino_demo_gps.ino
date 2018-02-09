@@ -14,24 +14,30 @@
 */
 
 #include <SoftwareSerial.h>
-SoftwareSerial SoftSerial(4, 5); // Digital port D4 (also occupies D5, so leave it unused)
+#include "gps_data.h"
+#include "byteorder.h"
 
+SoftwareSerial SoftSerial(4, 5); // Digital port D4 (also occupies D5, so leave it unused)
+gps_coord_t coord;
 
 void setup()
 {
   SoftSerial.begin(9600);                         // the SoftSerial baud rate
   Serial.begin(9600);                             // the Serial port of Arduino baud rate.
   Serial.println("*** GPS Demo ***");
+
+
 }
 
 
 void loop () 
 {
 
-   readGPS();
- 
+   coord = readGPS();
+   Serial.println("coord in float: " + String(coord.longitude, 4) + "  &  " + String(coord.latitude, 4));
+   Serial.println("coord in network byte order: " + String(htonl(*((uint32_t*)&coord.longitude)), HEX) + "  &  " + String(htonl(*((uint32_t*)&coord.latitude)), HEX));
 }
 
 
-
+ 
 

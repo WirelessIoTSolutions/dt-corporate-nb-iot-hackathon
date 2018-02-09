@@ -1,7 +1,9 @@
-void readGPS() {
+gps_coord_t readGPS() {
+
   
   // NOTE lineStartSeq as a String object to make sure it is treated correctly by overloaded functions./
   const String lineStartSeq = "$GPGGA";
+  gps_coord_t gps;
   
   String str = "";
   String res = "";
@@ -70,6 +72,25 @@ void readGPS() {
     Serial.println("Longitude -  " + gps_coords_1);
     Serial.println("Latidue   -  " + gps_coords_2);
     Serial.println("****************************************");
+
+
+    if (gps_coords_1[10] == 'N') {
+      gps.longitude = gps_coords_1.toFloat();
+    }
+    else {
+      gps.longitude = (gps_coords_1.toFloat() * -1);
+    }
+     
+       
+    if (gps_coords_2[10] == 'E') {
+      gps.latitude = (gps_coords_2.toFloat());
+    }
+    else {
+      gps.latitude = (gps_coords_2.toFloat() * -1);
+    }
+    
+    
+    
   }
   else
   {
@@ -78,5 +99,7 @@ void readGPS() {
   }
 
   SoftSerial.end();
+
+  return gps;
 }
 
