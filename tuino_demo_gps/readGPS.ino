@@ -75,18 +75,18 @@ gps_coord_t readGPS() {
 
 
     if (gps_coords_1[10] == 'N') {
-      gps.longitude = gps_coords_1.toFloat();
+      gps.longitude.fl = gps_coords_1.toFloat();
     }
     else {
-      gps.longitude = (gps_coords_1.toFloat() * -1);
+      gps.longitude.fl = (gps_coords_1.toFloat() * -1);
     }
      
        
     if (gps_coords_2[10] == 'E') {
-      gps.latitude = (gps_coords_2.toFloat());
+      gps.latitude.fl = (gps_coords_2.toFloat());
     }
     else {
-      gps.latitude = (gps_coords_2.toFloat() * -1);
+      gps.latitude.fl = (gps_coords_2.toFloat() * -1);
     }
     
     

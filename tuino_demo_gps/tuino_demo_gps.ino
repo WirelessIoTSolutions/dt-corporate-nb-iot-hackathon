@@ -34,8 +34,8 @@ void loop ()
 {
 
    coord = readGPS();
-   Serial.println("coord in float: " + String(coord.longitude, 4) + "  &  " + String(coord.latitude, 4));
-   Serial.println("coord in network byte order: " + String(htonl(*((uint32_t*)&coord.longitude)), HEX) + "  &  " + String(htonl(*((uint32_t*)&coord.latitude)), HEX));
+   Serial.println("coord in float: " + String(coord.longitude.fl, 4) + "  &  " + String(coord.latitude.fl, 4));
+   Serial.println("coord in network byte order: " + String(htonl(coord.longitude.u32), HEX) + "  &  " + String(htonl(coord.latitude.u32), HEX));
 }
 
 

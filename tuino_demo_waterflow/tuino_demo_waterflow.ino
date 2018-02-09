@@ -1,6 +1,17 @@
-// reading liquid flow rate using Seeeduino and Water Flow Sensor from Seeedstudio.com
-// Code adapted by Charles Gantt from PC Fan RPM code written by Crenn @thebestcasescenario.com
-// http:/themakersworkbench.com http://thebestcasescenario.com http://seeedstudio.com
+/**
+   @file tuino_demo_gps.ino
+   @description Demo to show the usage of a waterflow sensor with TUINO.
+   @author akrause
+   @copyright (C) 2017 mm1 Technology GmbH - all rights reserved.
+   @licence MIT licence
+
+   Find out more about mm1 Technology:
+   Company: http://mm1-technology.de/
+   GitHub:  https://github.com/mm1technology/
+
+   Code pieces partially based on seeed example project(s):
+   hhttp://wiki.seeed.cc/
+*/
 
 volatile int NbTopsFan; //measuring the rising edges of the signal
 int Calc;
