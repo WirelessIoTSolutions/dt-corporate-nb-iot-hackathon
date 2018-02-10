@@ -25,8 +25,8 @@ const String udp_remote_addr  = "172.25.102.151";
 const int udp_remote_port     = 1883;
 
 /*CoT access parameters*/
-String myImsi                 = "901405800006638";
-String myCotPassword          = "c9uKm4GZ";
+String myImsi                 = "{your_imsi}";
+String myCotPassword          = "{your_password}";
 
 int myMqttsnTopicId = MQTTSN_TOPIC_INVALID_ID;
 
