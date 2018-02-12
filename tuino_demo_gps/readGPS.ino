@@ -42,8 +42,6 @@ gps_coord_t readGPS() {
 
   } while ((indexStart < 0) || (indexStart >= indexEnd));
 
-  Serial.println("Raw GPS data: " + str + " len: " + str.length());
-  Serial.println("****************************************");
 
 /* Message detected, check this message for consistency.
 * TODO: Checksum validation might be nice...!!!
@@ -81,11 +79,19 @@ gps_coord_t readGPS() {
       gps.latitude.fl = (gps_coords_2.toFloat() * -1);
     }
     gps.latitude.fl = normalize(gps.latitude.fl);
+
+  Serial.println("****************************************");
+  Serial.println("Raw GPS data: " + str + " len: " + str.length());
+  Serial.println("Your position: " + String(gps.longitude.fl, 4) + "  ,  " + String(gps.latitude.fl, 4));
+  
   }
   else
   {
-  Serial.println("invalid GPS data: " + res);
-  Serial.println("commaCount:" + String(commaCount) + " res[10]:" + String(res[10]) + " res[10]:" + String(res[10]) + " res[12] " + String(res[12]));
+  Serial.println("****************************************");  
+  Serial.println("Invalid GPS data: " + res);
+  // Serial.println("commaCount: " + String(commaCount) + " res[10]: " + String(res[10]) + " res[23]: " + String(res[23]));
+  gps.latitude.fl = 0.0;
+  gps.longitude.fl = 0.0;
   }
 
   SoftSerial.end();

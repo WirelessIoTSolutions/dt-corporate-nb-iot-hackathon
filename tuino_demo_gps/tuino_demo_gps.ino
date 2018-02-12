@@ -33,22 +33,19 @@ void loop ()
    char payload[8];
    char hex[3];
    coord = readGPS();
-   
-   Serial.println("Your position: " + String(coord.longitude.fl, 4) + "  ,  " + String(coord.latitude.fl, 4));
-   
-   gps_to_mqtt(coord, payload);
 
-   Serial.print("MQTT-SN payload: ");
-   byte_to_hex(payload[0], hex);
-   Serial.print( hex );
-    
-   for( int i = 1; i < 8; i++) {
-     byte_to_hex(payload[i], hex);
-     Serial.print(", ");
-     Serial.print( hex );
-   }   
-   Serial.println();
-   
+   if ((coord.longitude.fl || coord.latitude.fl) != 0.0) {
+    gps_to_mqtt(coord, payload);
+    Serial.print("MQTT-SN payload: ");
+    byte_to_hex(payload[0], hex);
+    Serial.print( hex );
+    for( int i = 1; i < 8; i++) {
+      byte_to_hex(payload[i], hex);
+      Serial.print(", ");
+      Serial.print( hex );
+    }   
+    Serial.println();
+   }
 }
 
 
