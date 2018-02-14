@@ -14,8 +14,8 @@
 
 #define NB_IOT_SERVER_IP      "172.25.102.151"
 #define NB_IOT_SERVER_PORT    1883
-#define NB_IOT_IMSI           "901405800018831" 
-#define NB_IOT_COT_PWD        "3tyKs46D"
+#define NB_IOT_IMSI           "<IMSI>" 
+#define NB_IOT_COT_PWD        "<COT PWD>"
 
 /**
  * GSM Credentials
