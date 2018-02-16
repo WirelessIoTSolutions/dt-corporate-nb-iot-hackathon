@@ -1,3 +1,20 @@
+/**
+ * @file nbito_simple_temperature.ino
+ * @description Demo to show TUINO button setup and function.
+ * @author julia heydecke
+ * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
+ * @licence MIT licence
+ * 
+ * Find out more about mm1 Technology:
+ * Company: http://mm1-technology.de/
+ * GitHub:  https://github.com/mm1technology/
+ * 
+ * Code pieces partially based on GIMASI TUINO example project(s):
+ * Company: http://www.tuino.io/
+ * GitHub:  https://github.com/gimasi
+**/
+
+
 #include "secrets.h"
 #include "temperature.h"
 

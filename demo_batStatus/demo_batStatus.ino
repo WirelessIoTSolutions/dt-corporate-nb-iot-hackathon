@@ -1,3 +1,18 @@
+/**
+ * @file tuino_batStatus.ino
+ * @description Demo to show TUINO battery state of charge and voltage function.
+ * @author julia heydecke
+ * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
+ * @licence MIT licence
+ * 
+ * Find out more about mm1 Technology:
+ * Company: http://mm1-technology.de/
+ * GitHub:  https://github.com/mm1technology/
+ * 
+ * Code pieces partially based on GIMASI TUINO example project(s):
+ * Company: http://www.tuino.io/
+ * GitHub:  https://github.com/gimasi
+**/
 
 #include "MAX17048.h"
 #include "Wire.h"
@@ -5,6 +20,8 @@
 
 MAX17048 batteryMonitor;
 
+float cellVoltage;
+float stateOfCharge;
 
 void setup() {
   
@@ -24,12 +41,12 @@ void setup() {
 
 void loop() {   
 
-  float cellVoltage = batteryMonitor.getVCell();
+  cellVoltage = batteryMonitor.getVCell();
   Serial.print("Voltage:\t\t");
   Serial.print(cellVoltage, 4);
   Serial.println("V");
 
-  float stateOfCharge = batteryMonitor.getSoC();
+  stateOfCharge = batteryMonitor.getSoC();
   Serial.print("State of charge:\t");
   Serial.print(stateOfCharge);
   Serial.println("%");

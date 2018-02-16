@@ -2,7 +2,7 @@
 /**
  * @file tuino_demo_lightsensor.ino
  * @description Demo to show light sensor setup and function.
- * @author heydecke
+ * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
  * @licence MIT licence
  * 
