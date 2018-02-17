@@ -2,6 +2,7 @@
 //
 // Created by Luca Dentella (http://www.lucadentella.it)
 // Modified by Ali Kianzadeh
+// https://github.com/alikian/ArduinoLib_MAX17048
 
 #include "MAX17048.h"
 #include "Wire.h"

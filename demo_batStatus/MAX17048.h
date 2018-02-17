@@ -1,6 +1,7 @@
 // MAX17048/44 library for Arduino
 //
 // Luca Dentella (http://www.lucadentella.it)
+// https://github.com/alikian/ArduinoLib_MAX17048
 
 #include "Arduino.h"
 
