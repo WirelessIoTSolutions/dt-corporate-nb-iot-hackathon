@@ -13,13 +13,13 @@ necessary.
 
 For more information about NB-IoT and attendance at the Hackathon please contact mm1 Technology or Deutsche Telekom:
 
-[Deutsche Telekom](https://m2m.telekom.com/de/telekom-m2m/einblicke/narrowband-iot-nb-iot/)
+[Deutsche Telekom](https://m2m.telekom.com/de/telekom-m2m/einblicke/narrowband-iot-nb-iot/)  
 [mm1 Technology.de](http://www.mm1-technology.de)
 
 ## Setup
 
 The NB-IoT communication uses the open source Arduino library provided by Deutsche Telekom. Please use the detailed setup and 
-configuration information the the [Telekom github pages](https://github.com/cloud-of-things/dt-arduino-iot-agent)
+configuration information the the [Telekom Arduino library github pages](https://github.com/cloud-of-things/dt-arduino-iot-agent)
 
 ## Authors
 
