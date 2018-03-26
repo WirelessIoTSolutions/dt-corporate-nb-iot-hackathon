@@ -1,8 +1,9 @@
-# tuino_demo_digout
-Tuino application that demonstrates the usage of a digital output.
+# tuino_demo_led_relay
+Tuino application that demonstrates the usage of a digital output, e.g. LEDs or 
+relay.
 
 ## Setup
-* Connect the LED with the digital I/O port D5.
+* Connect the LED (or the relay) with the digital I/O port D5.
 * Connect the Tuino with a PC using the USB cable.
 * Open this project with the Arduino IDE.
 * Open menu Tools->Serial Monitor of the Arduino IDE.
