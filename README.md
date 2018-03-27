@@ -9,7 +9,7 @@ The examples and demos have been developed to support the Deutsche Telekom Corpo
 
 ## Setup
 The NB-IoT communication uses the open source Arduino library provided by Deutsche Telekom. Please use the detailed setup and 
-configuration information the the [Telekom Arduino library github pages](https://github.com/cloud-of-things/dt-arduino-iot-agent)
+configuration information the [Telekom Arduino library github pages](https://github.com/cloud-of-things/dt-arduino-iot-agent)
 
 ## Authors
 A list of contibutors can be found in the [AUTHORS file](AUTHORS)
