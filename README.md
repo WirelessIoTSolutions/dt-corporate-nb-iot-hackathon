@@ -1,4 +1,4 @@
-# Deutsche Telekom NB-IoT Hackathon demo and examples
+# Deutsche Telekom NB-IoT Hackathon Demo And Examples
 Examples for Deutsche Telekom NB-IoT Hackathon using Gimasi Tuino1 and a variety of Seeed Groove peripherals.
 
 ## General information
