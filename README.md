@@ -1,5 +1,5 @@
 # Deutsche Telekom NB-IoT Hackathon demo and examples
-Examples for Deutsche Telekom NB-IoT Hackathon using Gimasi Tuino1 and a viariety of Seeed Groove peripherals.
+Examples for Deutsche Telekom NB-IoT Hackathon using Gimasi Tuino1 and a variety of Seeed Groove peripherals.
 
 ## General information
 The examples and demos have been developed to support the Deutsche Telekom Corporate NB-IoT Hackathon. All examples are tested with the Tuino1 by Gimasi, a slidely adjusted Arduino Mega which can be programmed with the Arduino IDE. For communication via NB-IoT, the DT Arduino library, a NB-IoT SIM card and a DT Cloud of Things account are required. For more information about NB-IoT and attendance at the Hackathon please contact mm1 Technology or Deutsche Telekom:
