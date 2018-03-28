@@ -28,7 +28,6 @@ const unsigned short CLOUD_SERVER_PORT = 1883;
 
 char examplTempStr[10];
 bool successfulRegistered = false;
-int tempSensorPin = A0;
 float current_temperature = 0.0f;
 
 /*Temperature sensor constants*/
@@ -58,26 +57,17 @@ CoTCloud cloud(
 
 
 
-float readTemp() {
-  const int B = 4275;                                           // B value of the thermistor
-  int sensorRaw = (float)analogRead(tempSensorPin);
-  float R = 1023.0 / ((float)sensorRaw) - 1.0;
-  float temperature = 1.0 / (log(R) / B + 1 / 298.15) - 273.15; //convert to temperature via datasheet ;
-
-  return temperature;
-}
-
-
 void setup() {
   /*serial debug output*/
   Serial.begin(9600);
   Serial.println("Temperature Sensor Demo");
-  // Init Temperature
-  current_temperature = readTemp();
 
-  registerTemperature();
+  delay(1000);
 
-  if(successfulRegistered == 1) {
+  device.init();
+  cloud.init();
+  
+  if(registerTemperature(cloud) == true) {
     Serial.println("Connected      ");
   }
   else {
@@ -88,23 +78,11 @@ void setup() {
 
 
 void loop() {
-  static float temp_temperature = 0.0f;
-  static int temperature_counts = 0;
-
-  temp_temperature += readTemp();
-  temperature_counts++;
-
-  if ( temperature_counts >= TEMPERATURE_SAMPLING ) {
-    current_temperature = temp_temperature / TEMPERATURE_SAMPLING;
-    temperature_counts = 0;
-    temp_temperature = 0;
-  }
-    
   // CoT-Version
   Serial.println("Sending information to Cloud of Things...");
-  Serial.println(current_temperature);
-  sendTemperature();
+  // Serial.println(current_temperature);
+  sendTemperature(cloud);
    
-  delay(1000);
+  delay(5000);
 }
 

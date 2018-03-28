@@ -1,15 +1,12 @@
-
-#ifndef TEMPERATURE_H
-#define TEMPERATURE_H
+#ifndef _temperature_h
+#define _temperature_h
 
 #include "Arduino.h"
 #include "DTCoT.h"
 
-#define REGISTER_TEMPERATURE    1
-
-extern void registerTemperature();
-extern void sendTemperature();
-
-#endif /*TEMPERATURE_H*/
+extern bool registerTemperature(DTCoT::CoTCloud &cloud);
+extern float sendTemperature(DTCoT::CoTCloud &cloud);
+extern void checkTemperature();
 
 
+#endif /*_temperature_h*/
