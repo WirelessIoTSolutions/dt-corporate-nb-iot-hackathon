@@ -12,8 +12,9 @@ Tuino application that demonstrates the usage of the GPS module.
 
 ## Feature(s)
 This project provides an example of:
-* how to configure the Tuino to connect a GPS module.
+* how to configure the Tuino to connect a GPS module 
 * basic I/O functions to communicate with the GPS module using a software emulated serial interface.
 
 ## Note
-(None)
+Usually the Grove GPS module doesn't provide valid GPS data during the first few minutes. For this time you get the message "Invalid GPS data:...". After that the output includes raw GPS data, the coordinates of your position (latitude, longitude), and the coordinates encoded to a MQTT-SN payload.
+

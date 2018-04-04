@@ -1,6 +1,6 @@
 /**
- * @file tuino_demo_button.ino
- * @description Demo to show TUINO button setup and function.
+ * @file demo_motionLight.ino
+ * @description Tuino application that demonstrates the usage of a motion sensor.
  * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
  * @licence MIT licence

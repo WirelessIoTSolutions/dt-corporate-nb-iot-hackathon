@@ -1,5 +1,5 @@
 /**
-   @file tuino_demo_gps.ino
+   @file tuino_demo_waterflow.ino
    @description Demo to show the usage of a waterflow sensor with TUINO.
    @author akrause
    @copyright (C) 2017 mm1 Technology GmbH - all rights reserved.

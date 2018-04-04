@@ -1,5 +1,5 @@
 /**
- * @file tuino_demo_digout.ino
+ * @file tuino_demo_led_relay.ino
  * @description Demo to show TUINO digital output setup and function.
  * @author akrause
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 

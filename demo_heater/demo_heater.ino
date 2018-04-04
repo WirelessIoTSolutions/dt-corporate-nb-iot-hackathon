@@ -1,6 +1,6 @@
 /**
- * @file tuino_demo_tempsensor.ino
- * @description Demo to show temperature sensor setup and function.
+ * @file tuino_demo_heater.ino
+ * @description Demo to show ...
  * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
  * @licence MIT licence

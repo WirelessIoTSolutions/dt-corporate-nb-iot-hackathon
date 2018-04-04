@@ -15,8 +15,8 @@
  */
 
 /*macro definitions of PIR motion sensor pin and LED pin*/
-#define PIR_MOTION_SENSOR 4//Use D4 to receive the signal from the module
-#define LED 5//the Grove - LED is connected to D5 of Arduino
+#define PIR_MOTION_SENSOR 4 //Use D4 to receive the signal from the module
+#define LED 5 //the Grove - LED is connected to D5 of Tuino
 
 
 void setup()
@@ -27,25 +27,37 @@ void setup()
 
 void loop()
 {
-    if(isPeopleDetected())//if it detects the moving people?
+    /*If the motion sensor detects the moving people, the LED turns on*/
+    
+    if(isPeopleDetected())
+    {
         digitalWrite(LED, HIGH);
+    }
     else
+    {
         digitalWrite(LED, LOW);
+    }
 }
 
 
 /***************************************************************/
+
 /*Function: Detect whether anyone moves in it's detecting range*/
-/*Return:-boolean, true is someone detected.*/
+/*Return:-boolean, true if someone is detected.*/
+
 boolean isPeopleDetected()
 {
     int sensorValue = digitalRead(PIR_MOTION_SENSOR);
-    if(sensorValue == HIGH)//if the sensor value is HIGH?
+
+    /*if the sensor value is HIGH, the function returns true*/
+    /*else it returns false*/
+    
+    if(sensorValue == HIGH)
     {
-        return true;//yes,return true
+        return true;
     }
     else
     {
-        return false;//no,return false
+        return false;
     }
 }

@@ -2,11 +2,10 @@
 Tuino application that demonstrates the usage of a magnetic switch.
 
 ## Setup
-* Connect the button with the digital I/O port D4.
-* connect the LED with the digital I/O port D5.
+* Connect the magnetic switch with the digital I/O port D4.
+* Connect the LED with the digital I/O port D5.
 * Connect the Tuino with a PC using the USB cable.
 * Open this project with the Arduino IDE.
-* Open menu Tools->Serial Monitor of the Arduino IDE.
 * Compile and upload the project to the Tuino.
 
 ## Feature(s)

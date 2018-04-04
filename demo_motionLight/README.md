@@ -1,4 +1,4 @@
-# tuino_demo_motionsensor
+# tuino_demo_motionLight
 Tuino application that demonstrates the usage of a motion sensor.
 
 ## Setup
@@ -6,7 +6,6 @@ Tuino application that demonstrates the usage of a motion sensor.
 * Connect the LED with the digital port D5.
 * Connect the Tuino with a PC using the USB cable.
 * Open this project with the Arduino IDE.
-* Open menu Tools->Serial Monitor of the Arduino IDE.
 * Compile and upload the project to the Tuino.
 
 ## Feature(s)

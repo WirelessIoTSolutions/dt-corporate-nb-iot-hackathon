@@ -1,6 +1,6 @@
 /**
- * @file nbito_simple_temperature.ino
- * @description Demo to show TUINO button setup and function.
+ * @file nbiot_simple_temperature.ino
+ * @description Demo to demonstrate the usage of a temperature sensor and monitoring of the measured data in the Deutsche Telekom Cloud of Things
  * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
  * @licence MIT licence

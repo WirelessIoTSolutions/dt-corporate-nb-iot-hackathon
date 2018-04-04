@@ -1,4 +1,4 @@
-# tuino_demo_button
+# tuino_demo_batStatus
 Tuino application that demonstrates the scan of the battery status
 
 ## Setup
