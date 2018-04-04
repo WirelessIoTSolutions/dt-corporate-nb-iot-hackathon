@@ -1,5 +1,5 @@
 /**
- * @file tuino_demo_gps.ino
+ * @file tuino_demo_serial_redirect.ino
  * @description Demo to show the usage of a GPS receiver with TUINO.
  * @author akrause
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 

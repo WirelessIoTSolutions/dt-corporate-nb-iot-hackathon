@@ -56,7 +56,7 @@ const int SCL = 13;
 */
 
 
-#include <Accelerometer_Compass_LSM303D.h>
+#include "Accelerometer_Compass_LSM303D.h"
 #include <Wire.h>
 #include <SPI.h>
 
@@ -268,4 +268,5 @@ float LSM303D::getTiltHeading(int * magValue, float * accelValue)
 }
 
 LSM303D Lsm303d;
+
 

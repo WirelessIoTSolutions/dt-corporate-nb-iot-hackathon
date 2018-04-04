@@ -1,5 +1,5 @@
 /**
- * @file tuino_demo_pir.ino
+ * @file tuino_demo_motionLight.ino
  * @description Demo to show TUINO pir setup and function.
  * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 

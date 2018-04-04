@@ -1,5 +1,5 @@
 /**
- * @file tuino_batStatus.ino
+ * @file tuino_demo_batStatus.ino
  * @description Demo to show TUINO battery state of charge and voltage function.
  * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 

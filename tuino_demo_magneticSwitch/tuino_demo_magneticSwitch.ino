@@ -29,7 +29,7 @@ void setup()
 
 void loop()
 {
-    /*read the status of the button*/
+    /*read the status of the magnetic switch*/
     int mSwitchState = digitalRead(mSwitch);  
     
     if(mSwitchState == 1)

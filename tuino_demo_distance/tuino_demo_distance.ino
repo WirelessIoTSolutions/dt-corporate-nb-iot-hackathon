@@ -1,7 +1,7 @@
 /**
    @file tuino_demo_distance.ino
    @description Demo to show the usage of a ultrasonic ranger with TUINO.
-   @julia heydecke
+   @author julia heydecke
    @copyright (C) 2017 mm1 Technology GmbH - all rights reserved.
    @licence MIT licence
 

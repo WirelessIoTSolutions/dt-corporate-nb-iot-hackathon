@@ -1,6 +1,6 @@
 /**
- * @file tuino_demo_heater.ino
- * @description Demo to show ...
+ * @file tuino_demo_heat_monitor.ino
+ * @description Tuino application that demonstrates the usage of a OLED display to monitor the temperature measured with the temperature sensor and the status of a window (simulated by a button)
  * @author julia heydecke
  * @copyright (C) 2017 mm1 Technology GmbH - all rights reserved. 
  * @licence MIT licence
@@ -61,13 +61,13 @@ void setup() {
 
   /*put the text on the display that never change:*/
   SeeedOled.setTextXY(0, 0);
-  SeeedOled.putString("OLED Demo");
+  SeeedOled.putString("HEAT MONITOR");
   SeeedOled.setTextXY(2, 0);
-  SeeedOled.putString("Temp: ");
+  SeeedOled.putString("temp.: ");
   SeeedOled.setTextXY(4, 0);
-  SeeedOled.putString("Fenster: ");
+  SeeedOled.putString("window: ");
   SeeedOled.setTextXY(6, 0);
-  SeeedOled.putString("aktuell: ");
+  SeeedOled.putString("currently: ");
 }
 
 
@@ -97,24 +97,25 @@ void loop() {
 
   if (current_temperature < 17 ) {
     SeeedOled.setTextXY(2, 8);
-    SeeedOled.putString("  kalt");
+    SeeedOled.putString("   cold");
   }
   else {
     SeeedOled.setTextXY(2, 8);
-    SeeedOled.putString("  warm"); 
+    SeeedOled.putString("   warm"); 
   }
 
   if(buttonState == 0) {
     SeeedOled.setTextXY(4, 8);
-    SeeedOled.putString(" offen");
+    SeeedOled.putString(" opened");
   }
   else {
     SeeedOled.setTextXY(4, 8);
-    SeeedOled.putString("    zu");
+    SeeedOled.putString(" closed");
   }}
     
-  SeeedOled.setTextXY(6, 9);
-  SeeedOled.putNumber(current_temperature);
+  SeeedOled.setTextXY(6, 13);
+  /*adding of 0.5 to a nummber to round it properly*/
+  SeeedOled.putNumber(int(current_temperature + 0.5));
   
   Serial.println(current_temperature);
   //delay(1000);
