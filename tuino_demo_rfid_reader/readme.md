@@ -14,4 +14,4 @@ You need a 4 pin male/female jumper to Grove 4 pin conversion cable for the setu
 
 # Feature
 
-Place the RFID tag into the square reader. Open the Serial Monitor for the output.
+Place the RFID tag into frame the red square reader. Open the Serial Monitor for the output.
