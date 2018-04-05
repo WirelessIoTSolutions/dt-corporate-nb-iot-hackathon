@@ -31,8 +31,8 @@ byte isCardReadOver = 0;
 void setup()
 {
   Serial.begin(9600);
-  attachInterrupt(0,ISRreceiveData0, FALLING );  //data0/tx is connected to pin 2, which results in INT 0
-  attachInterrupt(1,ISRreceiveData1, FALLING );  //data1/rx is connected to pin 3, which results in INT 1
+  attachInterrupt(0,ISRreceiveData0, FALLING );  //data0/tx is connected to pin 3, which results in INT 0
+  attachInterrupt(1,ISRreceiveData1, FALLING );  //data1/rx is connected to pin 2, which results in INT 1
 
 }
 
