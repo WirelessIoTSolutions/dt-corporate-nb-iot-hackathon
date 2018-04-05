@@ -4,7 +4,7 @@ Tuino application for the use of the 125 kHz rfid_reader in wiegand mode.
 
 # Notes
 
-You have to use Grove 4 pin male/female jumper to Grove 4 pin conversion cable for this project. The tuino has a voltage of 3.3V while the 125kHz RFID reader has 5V. The output format ist Wiegand.
+You have to use Grove 4 pin male/female jumper to Grove 4 pin conversion cable for this project. The tuino has a voltage of 3.3V while the 125kHz RFID reader has 5V. The output format ist Wiegand. Set the jumper of the 125 kHz RFID reader to the right two pins.
 
 # Setup
 
