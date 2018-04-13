@@ -6,7 +6,7 @@
  * Wifi Credentials
  */
 #define SECRET_WIFI_SSID      "mm1-technology-gast"
-#define SECRET_WIFI_PASSWORD  "We2RF1tec"
+#define SECRET_WIFI_PASSWORD  ""
 
 /**
  * NB-IoT Credentials
@@ -36,7 +36,7 @@
 
 
 
-const char* CLOUD_SERVER_PASSWORD = "f53d3470b1b0430297a51b8b881587df";
-const char* ADAFRUIT_USER_ID = "mqtt_enthusiast";
+const char* CLOUD_SERVER_PASSWORD = "";
+const char* ADAFRUIT_USER_ID = "";
 
 #endif /* DT_COT_ARDUINO_LIBRARY_SECRET_HEADER_FILE */
