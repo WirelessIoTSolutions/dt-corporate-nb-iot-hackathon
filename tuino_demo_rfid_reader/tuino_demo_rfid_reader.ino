@@ -14,11 +14,16 @@
 #include <SoftwareSerial.h>
  
 /*Connect the RFID reader to D4 on the */
-SoftwareSerial SoftSerial(4, 5);
+SoftwareSerial SoftSerial(6, 7);
 /*buffer array for data receive over serial port*/
-unsigned char buffer[64];
+// unsigned char buffer[64];
+char buffer[64];
 /*counter for buffer array*/
 int count = 0;
+/*connect a LED to D8!*/
+int outPin = D8;
+
+
  
 void setup()
 {
@@ -27,10 +32,16 @@ void setup()
   /*Serial port for debugging / result output; baud rate: 9600*/
   Serial.begin(9600);
   Serial.println("tuino_demo_rfid_reader");
+  /*configure as output*/
+  pinMode(outPin, OUTPUT);
 }
  
 void loop()
 {
+    static bool relayState = false;
+    const String referenceRfid = "580071230E04";
+    String readRfid;
+    
     /* if date is coming from software serial port ==> data is coming from SoftSerial shield*/
     if (SoftSerial.available())              
     {
@@ -43,10 +54,35 @@ void loop()
             {
               break;
             }
+            delay(10);
         }
 
         /*if no data transmission ends, write buffer to hardware serial port*/
-        Serial.write(buffer, count);
+        // Serial.println("count: " + String(count));
+        // Serial.write(buffer, count);
+        // Serial.println("");
+        
+        if(count > 0){
+          for(int i = 1; i < count - 1; i++){
+             readRfid += buffer[i];
+          }
+          // Serial.println("read: " + readRfid + " reference: " + referenceRfid);
+          Serial.println("read: " + readRfid);
+          if(readRfid == referenceRfid){
+            Serial.println("valid");
+            /*set dig out*/
+            digitalWrite(outPin, true);
+            delay(1000);
+          }
+          else
+          {
+            Serial.println("rejected");
+          }
+        }
+        Serial.println("=========");
+        /*reset dig out*/
+        digitalWrite(outPin, false);
+        
         /*call clearBufferArray function to clear the stored data from the array*/
         clearBufferArray();
         /*set counter of while loop to zero*/
